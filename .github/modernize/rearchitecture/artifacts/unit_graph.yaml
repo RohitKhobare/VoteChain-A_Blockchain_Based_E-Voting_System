@@ -1,0 +1,63 @@
+units:
+  - name: frontend-app
+    trigger: page
+    trigger_detail: "Browser app loaded from frontend/index.html; voting and results views are switched within App state."
+    source_anchors:
+      - path: frontend/index.html
+        line: 1
+      - path: frontend/src/main.jsx
+        line: 6
+      - path: frontend/src/App.jsx
+        line: 5
+      - path: frontend/src/blockchain.js
+        line: 38
+      - path: frontend/src/candidates.js
+        line: 1
+      - path: frontend/src/contract.json
+        line: 1
+      - path: frontend/src/styles.css
+        line: 1
+    exported_signature: []
+    dynamic_entrypoints: []
+    depends_on:
+      - unit: voting-contract
+        via: "ethers Contract ABI calls and VoteCast event through the injected wallet provider"
+    shared_refs:
+      - module: frontend-contract-metadata
+        used_fields: [address, chainId, abi]
+  - name: voting-contract
+    trigger: api
+    trigger_detail: "Ethereum contract constructor, public getters, vote(uint256), getResults(), and VoteCast event."
+    source_anchors:
+      - path: contracts/Voting.sol
+        line: 4
+    exported_signature:
+      - method: "constructor(string[] candidateNames)"
+        source_loc: "contracts/Voting.sol:14"
+        stability: must_preserve
+      - method: "vote(uint256 candidateIndex)"
+        source_loc: "contracts/Voting.sol:21"
+        stability: must_preserve
+      - method: "getResults() returns (string[] names, uint256[] counts)"
+        source_loc: "contracts/Voting.sol:36"
+        stability: must_preserve
+      - method: "getCandidateCount() returns (uint256)"
+        source_loc: "contracts/Voting.sol:31"
+        stability: must_preserve
+    dynamic_entrypoints: []
+    depends_on: []
+    shared_refs: []
+  - name: deployment-command
+    trigger: cli
+    trigger_detail: "npm run deploy invokes Hardhat on the configured localhost network."
+    source_anchors:
+      - path: scripts/deploy.js
+        line: 8
+    exported_signature: []
+    dynamic_entrypoints: []
+    depends_on:
+      - unit: voting-contract
+        via: "Deploys the Voting artifact with the configured CANDIDATES array."
+    shared_refs:
+      - module: frontend-contract-metadata
+        used_fields: [address, chainId, abi]

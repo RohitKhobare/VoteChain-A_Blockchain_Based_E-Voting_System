@@ -1,0 +1,15 @@
+unit: voting-contract
+bindings:
+  - type: convention
+    name: "Solidity public/external contract ABI"
+    source_loc: "contracts/Voting.sol:21"
+    target: "Voting contract external functions and public state getters"
+    must_appear_in_target: true
+    notes: "Public state variables generate ABI getters; Hardhat compiles the contract at Solidity 0.8.20."
+runtime_config:
+  - key: "solidity"
+    source_loc: "hardhat.config.js:5"
+    source: code
+    default_value: "0.8.20"
+    must_appear_in_target: true
+    notes: "Compiler version configured for this contract."

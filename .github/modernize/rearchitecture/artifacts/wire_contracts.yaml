@@ -1,0 +1,33 @@
+contracts:
+  - name: "Voting contract ABI"
+    unit: voting-contract
+    type: sdk
+    stability: must_preserve
+    source_loc: "contracts/Voting.sol:14"
+    contract:
+      method: "constructor(string[]), vote(uint256), getCandidateCount(), getResults(), public getters"
+      path: "Deployed Ethereum contract ABI"
+      request: "Constructor candidateNames; vote candidateIndex; getter calls as defined by Solidity ABI."
+      response: "Transaction receipt/event for vote; candidate count, names, voter flag, and vote counts from view calls."
+      error: "Constructor reverts below two candidates; vote reverts with Already voted or Invalid candidate."
+      auth: "Transactions are signed by the caller's Ethereum wallet; read calls are public."
+    target_contract:
+      method: "Preserve the current deployed ABI signatures and revert/event semantics."
+      notes: "No target framework or rewrite was requested; this entry documents the existing contract interface."
+    semantic_divergence: []
+  - name: "Frontend deployment metadata"
+    unit: deployment-command
+    type: file
+    stability: must_preserve
+    source_loc: "scripts/deploy.js:24"
+    contract:
+      method: "JSON file generation"
+      path: "frontend/src/contract.json"
+      request: "Successful Hardhat deployment."
+      response: "JSON object containing address, numeric chainId, and ABI."
+      error: "Deployment or file-write failures are logged and set a non-zero process exit code."
+      auth: "Local Hardhat node connection."
+    target_contract:
+      method: "Write frontend/src/contract.json with address, chainId, and abi."
+      notes: "The browser app imports this deployment-specific file to instantiate the contract."
+    semantic_divergence: []

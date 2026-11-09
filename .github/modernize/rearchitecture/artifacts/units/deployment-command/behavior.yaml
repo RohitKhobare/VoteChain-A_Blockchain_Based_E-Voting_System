@@ -1,0 +1,21 @@
+unit: deployment-command
+side_effects:
+  - source_loc: "scripts/deploy.js:10"
+    effect: "Deploy a Voting contract with the configured candidate names to the selected Hardhat network."
+    must_preserve: true
+  - source_loc: "scripts/deploy.js:24"
+    effect: "Write deployed address, chain ID, and ABI to frontend/src/contract.json."
+    must_preserve: true
+branches:
+  - source_loc: "scripts/deploy.js:28"
+    condition: "Deployment or export fails."
+    behavior: "Log the error and set the process exit code to 1."
+    must_preserve: true
+error_paths:
+  - source_loc: "scripts/deploy.js:28"
+    trigger: "Hardhat deployment, artifact loading, or output file write rejects."
+    outcome: "Print the error and terminate with a failing process exit code."
+    contract: "Non-zero process exit code."
+    must_preserve: true
+concurrency:
+  model: event-loop

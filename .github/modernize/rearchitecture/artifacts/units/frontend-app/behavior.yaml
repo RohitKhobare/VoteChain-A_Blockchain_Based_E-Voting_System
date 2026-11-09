@@ -1,0 +1,41 @@
+unit: frontend-app
+side_effects:
+  - source_loc: "frontend/src/App.jsx:22"
+    effect: "Requests wallet access and refreshes the connected account's contract results."
+    must_preserve: true
+  - source_loc: "frontend/src/App.jsx:57"
+    effect: "Submits a vote transaction, waits for confirmation, and refreshes results."
+    must_preserve: true
+  - source_loc: "frontend/src/App.jsx:36"
+    effect: "Subscribes to VoteCast and refreshes displayed contract results."
+    must_preserve: true
+branches:
+  - source_loc: "frontend/src/App.jsx:108"
+    condition: "No wallet is connected."
+    behavior: "Voting view asks the user to connect MetaMask before showing candidate choices."
+    must_preserve: true
+  - source_loc: "frontend/src/App.jsx:121"
+    condition: "Connected wallet has already voted or a vote transaction is pending."
+    behavior: "Disable vote buttons and show the voted or in-progress state."
+    must_preserve: true
+  - source_loc: "frontend/src/App.jsx:184"
+    condition: "No wallet is connected in the dashboard."
+    behavior: "Show a connect-wallet action instead of result values."
+    must_preserve: true
+  - source_loc: "frontend/src/App.jsx:44"
+    condition: "Wallet or chain changes."
+    behavior: "Reload the app so displayed wallet/network state is refreshed."
+    must_preserve: true
+error_paths:
+  - source_loc: "frontend/src/App.jsx:27"
+    trigger: "Wallet connection, contract reads, or network setup fails."
+    outcome: "Show a readable error in the status area."
+    contract: "User-visible status message; no HTTP response contract."
+    must_preserve: true
+  - source_loc: "frontend/src/App.jsx:63"
+    trigger: "Vote transaction is rejected or reverts."
+    outcome: "Show a readable error and clear the pending vote indicator."
+    contract: "User-visible status message; contract reverts remain authoritative."
+    must_preserve: true
+concurrency:
+  model: event-loop

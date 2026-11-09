@@ -1,0 +1,18 @@
+modules:
+  - name: frontend-contract-metadata
+    kind: config
+    source_loc: "frontend/src/contract.json:1"
+    used_by_units:
+      - frontend-app
+      - deployment-command
+    fields:
+      - name: address
+        type: "Ethereum contract address string"
+      - name: chainId
+        type: "number"
+      - name: abi
+        type: "JSON ABI array"
+    god_class: false
+    split_candidate: false
+    migration_strategy: copy
+    notes: "Deployment writes this file and the browser imports it to connect to the deployed contract."

@@ -1,0 +1,44 @@
+unit: voting-contract
+side_effects:
+  - source_loc: "contracts/Voting.sol:25"
+    effect: "Mark msg.sender as voted and increment the selected candidate's vote count."
+    must_preserve: true
+  - source_loc: "contracts/Voting.sol:28"
+    effect: "Emit VoteCast with the voter address and candidate index after state updates."
+    must_preserve: true
+branches:
+  - source_loc: "contracts/Voting.sol:15"
+    condition: "Constructor candidateNames contains fewer than two entries."
+    behavior: "Revert deployment with At least two candidates required."
+    must_preserve: true
+  - source_loc: "contracts/Voting.sol:22"
+    condition: "msg.sender has already voted."
+    behavior: "Revert vote with Already voted."
+    must_preserve: true
+  - source_loc: "contracts/Voting.sol:23"
+    condition: "candidateIndex is outside candidates."
+    behavior: "Revert vote with Invalid candidate."
+    must_preserve: true
+error_paths:
+  - source_loc: "contracts/Voting.sol:15"
+    trigger: "Fewer than two candidate names are passed to the constructor."
+    outcome: "Deployment reverts; no Voting contract is created."
+    contract: "Revert reason: At least two candidates required."
+    must_preserve: true
+  - source_loc: "contracts/Voting.sol:22"
+    trigger: "Address attempts a second vote."
+    outcome: "Vote transaction reverts without changing vote state."
+    contract: "Revert reason: Already voted."
+    must_preserve: true
+  - source_loc: "contracts/Voting.sol:23"
+    trigger: "Vote index is greater than or equal to candidate count."
+    outcome: "Vote transaction reverts without marking the address as voted."
+    contract: "Revert reason: Invalid candidate."
+    must_preserve: true
+concurrency:
+  model: sync
+  tx_boundary:
+    source_loc: "contracts/Voting.sol:21"
+    scope: "The caller eligibility check, voter flag update, tally increment, and VoteCast emission execute in one EVM transaction."
+    isolation: "EVM transaction execution; no explicit isolation setting."
+    must_preserve: true
