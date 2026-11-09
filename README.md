@@ -14,6 +14,9 @@ VoteChain is a local blockchain voting prototype built with Solidity, Hardhat, R
 - View total votes, candidate totals, and percentages in the dashboard.
 - Run contract tests with Hardhat, Mocha, and Chai.
 
+## Deployment 
+- https://rohitkhobare.github.io/VoteChain-A_Blockchain_Based_E-Voting_System/
+
 ## Project structure
 
 ```text
@@ -161,3 +164,6 @@ Edit the `CANDIDATES` array in `scripts/deploy.js` to change the on-chain candid
 The UI is a single React application with local component state rather than a router or server API. `blockchain.js` connects to MetaMask through ethers.js and instantiates the contract using the generated ABI/address. The Solidity contract is the authoritative source for candidate names, voter eligibility-by-address, and vote totals. The deployment script bridges the contract build/deployment and frontend by exporting the ABI and network-specific address.
 
 Additional source-anchored architecture notes are in [`project-structure.md`](./project-structure.md), [`tech-stack.md`](./tech-stack.md), [`data-model.md`](./data-model.md), and [`.github/modernize/rearchitecture/artifacts/architecture_index.md`](./.github/modernize/rearchitecture/artifacts/architecture_index.md).
+
+Rohit Manesh Khobare
+rohitkhobare2005@gmail.com
